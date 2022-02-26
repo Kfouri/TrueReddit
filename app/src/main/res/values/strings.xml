@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">TrueReddit</string>
+    <string name="published_by">Publicado por %1$s</string>
+    <string name="time_ago">hace %1$s</string>
+    <string name="num_comments">%1$s Comentarios</string>
+    <string name="time_ago_seconds">%1$s segundos</string>
+    <string name="time_ago_minutes">%1$s minutos</string>
+    <string name="time_ago_hours">%1$s horas</string>
+</resources>
