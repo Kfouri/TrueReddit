@@ -31,6 +31,11 @@ class PostListActivity : AppCompatActivity() {
         setLayout()
         setObservers()
         viewModel.getPostList()
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            binding.swipeRefreshLayout.isRefreshing = false
+            viewModel.getPostList()
+        }
     }
 
     private fun setLayout() {
