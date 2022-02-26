@@ -15,9 +15,12 @@ import kotlinx.coroutines.launch
 class PostListViewModel: ViewModel(), CoroutineScope {
 
     override val coroutineContext = Job()
+    private val postListMutableLiveData = MutableLiveData<Resource<PostResponse>>()
     private var mAPIService: APIService? = null
 
-    private val postListMutableLiveData = MutableLiveData<Resource<PostResponse>>()
+    var postAfter: String = ""
+    var isRefreshing: Boolean = false
+
     val postListLiveData: LiveData<Resource<PostResponse>>
         get() = postListMutableLiveData
 

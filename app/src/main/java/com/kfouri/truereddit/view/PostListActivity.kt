@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.kfouri.truereddit.adapter.PostListAdapter
 import com.kfouri.truereddit.databinding.ActivityPostListBinding
 import com.kfouri.truereddit.state.Status
@@ -34,6 +35,7 @@ class PostListActivity : AppCompatActivity() {
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             binding.swipeRefreshLayout.isRefreshing = false
+            viewModel.isRefreshing = true
             viewModel.getPostList()
         }
     }
@@ -45,6 +47,15 @@ class PostListActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@PostListActivity, LinearLayoutManager.VERTICAL, false)
             adapter = postListAdapter
         }
+
+        binding.recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (!binding.recyclerView.canScrollVertically(1) && !viewModel.isRefreshing) {
+                    viewModel.getPostList(viewModel.postAfter)
+                }
+            }
+        })
     }
 
     private fun setObservers() {
@@ -55,9 +66,11 @@ class PostListActivity : AppCompatActivity() {
                 }
                 Status.SUCCESS -> {
                     binding.progressBar.visibility = View.GONE
+                    viewModel.postAfter = it.data?.data?.after.toString()
                     it.data?.data?.children?.let { list ->
-                        postListAdapter.setData(list)
+                        postListAdapter.setData(list, viewModel.isRefreshing)
                     }
+                    viewModel.isRefreshing = false
                 }
                 Status.ERROR -> {
                     binding.progressBar.visibility = View.GONE

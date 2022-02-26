@@ -21,7 +21,7 @@ class PostListAdapter(
 )
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var list: List<Children> = emptyList()
+    private var list = ArrayList<Children>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.post_item, parent, false))
@@ -36,9 +36,16 @@ class PostListAdapter(
         (holder as ViewHolder).bind(item,context, clickImageListener)
     }
 
-    fun setData(newList: List<Children>) {
-        list = newList
-        notifyDataSetChanged()
+    fun setData(newList: List<Children>, isRefreshing: Boolean) {
+        if (isRefreshing) {
+            list.clear()
+            list.addAll(newList)
+            notifyDataSetChanged()
+        } else {
+            val oldCount = list.size
+            list.addAll(newList)
+            notifyItemRangeInserted(oldCount, list.size)
+        }
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
