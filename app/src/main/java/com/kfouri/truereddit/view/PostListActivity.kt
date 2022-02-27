@@ -1,17 +1,21 @@
 package com.kfouri.truereddit.view
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kfouri.truereddit.adapter.PostListAdapter
 import com.kfouri.truereddit.databinding.ActivityPostListBinding
 import com.kfouri.truereddit.state.Status
 import com.kfouri.truereddit.viewmodel.PostListViewModel
+import android.Manifest
 
 class PostListActivity : AppCompatActivity() {
 
@@ -29,8 +33,53 @@ class PostListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityPostListBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        requestPermission()
+
         setLayout()
         setObservers()
+
+    }
+
+    private fun requestPermission() {
+        if (ContextCompat.checkSelfPermission(this@PostListActivity,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+            PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this@PostListActivity,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                ActivityCompat.requestPermissions(this@PostListActivity,
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+            } else {
+                ActivityCompat.requestPermissions(this@PostListActivity,
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+            }
+        } else {
+            getData()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>,
+                                            grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            1 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] ==
+                    PackageManager.PERMISSION_GRANTED) {
+                    if ((ContextCompat.checkSelfPermission(this@PostListActivity,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                                PackageManager.PERMISSION_GRANTED)) {
+
+                            getData()
+                    }
+                } else {
+                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+                }
+                return
+            }
+        }
+    }
+
+    private fun getData() {
         viewModel.getPostList()
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -39,7 +88,6 @@ class PostListActivity : AppCompatActivity() {
             viewModel.getPostList()
         }
     }
-
     private fun setLayout() {
         //setAppBar()
 
