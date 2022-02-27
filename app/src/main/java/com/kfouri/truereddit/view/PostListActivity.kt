@@ -16,6 +16,8 @@ import com.kfouri.truereddit.databinding.ActivityPostListBinding
 import com.kfouri.truereddit.state.Status
 import com.kfouri.truereddit.viewmodel.PostListViewModel
 import android.Manifest
+import androidx.recyclerview.widget.ItemTouchHelper
+import com.kfouri.truereddit.api.model.Children
 
 class PostListActivity : AppCompatActivity() {
 
@@ -28,6 +30,7 @@ class PostListActivity : AppCompatActivity() {
         this@PostListActivity
     ) { urlImage : String -> itemClicked(urlImage) }
     private lateinit var binding: ActivityPostListBinding
+    private lateinit var postList: ArrayList<Children>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,6 +97,8 @@ class PostListActivity : AppCompatActivity() {
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@PostListActivity, LinearLayoutManager.VERTICAL, false)
             adapter = postListAdapter
+            val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+            itemTouchHelper.attachToRecyclerView(this)
         }
 
         binding.recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
@@ -116,6 +121,7 @@ class PostListActivity : AppCompatActivity() {
                     binding.progressBar.visibility = View.GONE
                     viewModel.postAfter = it.data?.data?.after.toString()
                     it.data?.data?.children?.let { list ->
+                        postList = ArrayList(list)
                         postListAdapter.setData(list, viewModel.isRefreshing)
                     }
                     viewModel.isRefreshing = false
@@ -131,5 +137,22 @@ class PostListActivity : AppCompatActivity() {
     private fun itemClicked(urlImage: String) {
         val intent = Intent(this, FullScreenActivity::class.java).putExtra(IMAGE_URL,urlImage)
         startActivity(intent)
+    }
+
+    private val itemTouchHelperCallback = object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            return false
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            val position = viewHolder.absoluteAdapterPosition
+            postList.removeAt(position)
+            postListAdapter.setData(postList, true)
+        }
+
     }
 }
