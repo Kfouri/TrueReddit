@@ -16,7 +16,12 @@ import com.kfouri.truereddit.databinding.ActivityPostListBinding
 import com.kfouri.truereddit.state.Status
 import com.kfouri.truereddit.viewmodel.PostListViewModel
 import android.Manifest
+import android.content.DialogInterface
+import android.view.Menu
+import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.kfouri.truereddit.R
 import com.kfouri.truereddit.api.model.Children
 
 class PostListActivity : AppCompatActivity() {
@@ -75,7 +80,7 @@ class PostListActivity : AppCompatActivity() {
                             getData()
                     }
                 } else {
-                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
                 }
                 return
             }
@@ -154,5 +159,45 @@ class PostListActivity : AppCompatActivity() {
             postListAdapter.setData(postList, true)
         }
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_remuve_all -> {
+                removeAllPosts()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun removeAllPosts() {
+
+        val positiveButtonClick = { _: DialogInterface, _: Int ->
+            viewModel.isRefreshing = true
+            postList.clear()
+            postListAdapter.setData(postList, true)
+        }
+
+        val negativeButtonClick = { _: DialogInterface, _: Int ->
+            //do nothing
+        }
+
+        if (postList.size > 0) {
+            val builder = AlertDialog.Builder(this)
+            with(builder)
+            {
+                setTitle(getString(R.string.app_name))
+                setMessage(getString(R.string.remove_all_message))
+                setPositiveButton(android.R.string.ok, DialogInterface.OnClickListener(function = positiveButtonClick))
+                setNegativeButton(android.R.string.cancel, negativeButtonClick)
+                show()
+            }
+        }
     }
 }

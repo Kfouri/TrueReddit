@@ -6,4 +6,6 @@
     <string name="time_ago_seconds">%1$s segundos</string>
     <string name="time_ago_minutes">%1$s minutos</string>
     <string name="time_ago_hours">%1$s horas</string>
+    <string name="remove_all_message">This action will remove all items, do you want to proceed?</string>
+    <string name="permission_denied">Permission Denied</string>
 </resources>

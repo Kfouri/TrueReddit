@@ -15,6 +15,7 @@ import android.graphics.drawable.Drawable
 import android.content.Intent
 import android.net.Uri
 import android.os.Environment
+import android.view.animation.AnimationUtils
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -47,6 +48,7 @@ class PostListAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = list[position]
         (holder as ViewHolder).bind(item,context, clickImageListener)
+        holder.itemView.container.animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.list_item_animation)
     }
 
     fun setData(newList: List<Children>, isRefreshing: Boolean) {
