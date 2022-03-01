@@ -15,56 +15,68 @@
     android:paddingBottom="10dp"
     android:layout_marginTop="8dp">
 
-    <ImageView
-        android:id="@+id/imageView_thumbnail"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_launcher_background" />
-
-    <TextView
-        android:id="@+id/textView_title"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginEnd="16dp"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView_thumbnail"
-        app:layout_constraintTop_toTopOf="@+id/imageView_thumbnail"
-        tools:text="To ban " />
-
-    <TextView
-        android:id="@+id/textView_author"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:textSize="11sp"
-        app:layout_constraintStart_toEndOf="@+id/imageView_thumbnail"
-        app:layout_constraintTop_toBottomOf="@+id/textView_title"
-        tools:text="Publicado por" />
-
-    <TextView
-        android:id="@+id/textView_date"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:textSize="11sp"
-        app:layout_constraintStart_toEndOf="@+id/textView_author"
-        app:layout_constraintTop_toBottomOf="@+id/textView_title"
-        tools:text="hace 8 horas" />
-
-    <TextView
-        android:id="@+id/textView_numberComments"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textSize="11sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView_thumbnail"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_launcher_background" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_title"
-        tools:text="1.9k Comentarios" />
+        app:layout_constraintStart_toEndOf="@+id/constraintLayout"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView_title"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="To ban " />
+
+        <TextView
+            android:id="@+id/textView_author"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:textSize="11sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_title"
+            tools:text="Publicado por" />
+
+        <TextView
+            android:id="@+id/textView_date"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:textSize="11sp"
+            app:layout_constraintStart_toEndOf="@+id/textView_author"
+            app:layout_constraintTop_toBottomOf="@+id/textView_title"
+            tools:text="hace 8 horas" />
+
+        <TextView
+            android:id="@+id/textView_numberComments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_title"
+            tools:text="1.9k Comentarios" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,12 +1,10 @@
 package com.kfouri.truereddit.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kfouri.truereddit.api.APIService
 import com.kfouri.truereddit.api.ApiClient
-import com.kfouri.truereddit.api.model.Children
 import com.kfouri.truereddit.api.model.PostResponse
 import com.kfouri.truereddit.database.DatabaseHelper
 import com.kfouri.truereddit.database.model.Post

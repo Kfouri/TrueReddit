@@ -111,8 +111,6 @@ class PostListActivity : AppCompatActivity() {
         }
     }
     private fun setLayout() {
-        //setAppBar()
-
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@PostListActivity, LinearLayoutManager.VERTICAL, false)
             adapter = postListAdapter
