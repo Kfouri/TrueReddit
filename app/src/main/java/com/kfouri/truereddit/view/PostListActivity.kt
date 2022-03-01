@@ -23,6 +23,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.kfouri.truereddit.R
 import com.kfouri.truereddit.api.model.Children
+import com.kfouri.truereddit.api.model.DataChildren
+import com.kfouri.truereddit.database.DatabaseBuilder
+import com.kfouri.truereddit.database.DatabaseHelperImpl
+import com.kfouri.truereddit.database.model.Post
+import com.kfouri.truereddit.viewmodel.ViewModelFactory
 
 class PostListActivity : AppCompatActivity() {
 
@@ -30,12 +35,21 @@ class PostListActivity : AppCompatActivity() {
         const val IMAGE_URL = "IMAGE_URL"
     }
 
-    private val viewModel: PostListViewModel by viewModels()
     private val postListAdapter = PostListAdapter(
         this@PostListActivity
-    ) { urlImage : String -> itemClicked(urlImage) }
+    ) { dataChildren : DataChildren, position: Int -> itemClicked(dataChildren, position) }
     private lateinit var binding: ActivityPostListBinding
     private lateinit var postList: ArrayList<Children>
+
+    private val dbHelper by lazy {
+        this.let {
+            DatabaseBuilder.getInstance(
+                it
+            )
+        }.let { DatabaseHelperImpl(it)}
+    }
+
+    val viewModel: PostListViewModel by viewModels { ViewModelFactory(dbHelper) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,7 +141,7 @@ class PostListActivity : AppCompatActivity() {
                     viewModel.postAfter = it.data?.data?.after.toString()
                     it.data?.data?.children?.let { list ->
                         postList = ArrayList(list)
-                        postListAdapter.setData(list, viewModel.isRefreshing)
+                        postListAdapter.setData(postList, viewModel.isRefreshing)
                     }
                     viewModel.isRefreshing = false
                 }
@@ -139,8 +153,14 @@ class PostListActivity : AppCompatActivity() {
         })
     }
 
-    private fun itemClicked(urlImage: String) {
-        val intent = Intent(this, FullScreenActivity::class.java).putExtra(IMAGE_URL,urlImage)
+    private fun itemClicked(dataChildren: DataChildren, position: Int) {
+        viewModel.setPostRead(Post(dataChildren.id))
+        postList.filter {
+            it.dataChildren.id == dataChildren.id
+        }[0].dataChildren.isRead = true
+        postListAdapter.notifyItemChanged(position)
+
+        val intent = Intent(this, FullScreenActivity::class.java).putExtra(IMAGE_URL,dataChildren.thumbnail)
         startActivity(intent)
     }
 

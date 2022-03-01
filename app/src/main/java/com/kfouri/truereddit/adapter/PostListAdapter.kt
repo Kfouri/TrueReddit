@@ -16,6 +16,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import android.view.animation.AnimationUtils
+import androidx.appcompat.content.res.AppCompatResources
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -25,13 +26,14 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.kfouri.truereddit.api.model.DataChildren
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PostListAdapter(
     private val context: Context,
-    private val clickImageListener: (String) -> Unit,
+    private val clickImageListener: (DataChildren, Int) -> Unit,
 )
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -47,8 +49,11 @@ class PostListAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = list[position]
-        (holder as ViewHolder).bind(item,context, clickImageListener)
+        (holder as ViewHolder).bind(item, context)
         holder.itemView.container.animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.list_item_animation)
+        item.dataChildren.thumbnail?.let { _ ->
+            holder.itemView.imageView_thumbnail.setOnClickListener { clickImageListener(item.dataChildren, position) }
+        }
     }
 
     fun setData(newList: List<Children>, isRefreshing: Boolean) {
@@ -64,7 +69,7 @@ class PostListAdapter(
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(item: Children, context: Context, clickImageListener: (String) -> Unit){
+        fun bind(item: Children, context: Context){
 
             val timeAgo = getTimeAgo(context, item.dataChildren.created)
             itemView.textView_title.text = item.dataChildren.title
@@ -75,8 +80,13 @@ class PostListAdapter(
                 loadImage(itemView.imageView_thumbnail, url, item.dataChildren.id)
             }
 
-            item.dataChildren.thumbnail?.let { url ->
-                itemView.imageView_thumbnail.setOnClickListener { clickImageListener(url) }
+//            item.dataChildren.thumbnail?.let { _ ->
+//                itemView.imageView_thumbnail.setOnClickListener { clickImageListener(item.dataChildren) }
+//            }
+
+            itemView.container.background = AppCompatResources.getDrawable(context, R.drawable.bg_card_list)
+            if (item.dataChildren.isRead) {
+                itemView.container.background = AppCompatResources.getDrawable(context, R.drawable.bg_card_list_read)
             }
         }
 

@@ -22,4 +22,5 @@ data class DataChildren(
     @SerializedName("created") val created: Long,
     @SerializedName("num_comments") val numComments: Int,
     @SerializedName("thumbnail") val thumbnail: String?,
+    var isRead: Boolean = false
 )
